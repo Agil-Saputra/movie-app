@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/theme.dart';
 
@@ -10,7 +9,7 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
-  int _selected_index = 0;
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,7 @@ class _BottomBarState extends State<BottomBar> {
         selectedItemColor: PrimaryColor,
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home_rounded),
             label: 'Home',
@@ -33,14 +32,14 @@ class _BottomBarState extends State<BottomBar> {
             label: 'Bookmark',
           ),
         ],
-        currentIndex: _selected_index,
+        currentIndex: selectedIndex,
         onTap: onTapBar,
       );
   }
 
     void onTapBar(int index) {
     setState(() {
-      _selected_index = index;
+      selectedIndex = index;
     });
   }
 

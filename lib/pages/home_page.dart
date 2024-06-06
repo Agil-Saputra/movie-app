@@ -1,11 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:movie_app/widgets/bottom_bar.dart';
+import 'package:movie_app/pages/discovery_page.dart';
+import 'package:movie_app/services/movie_service.dart';
+import 'package:movie_app/theme.dart';
 import 'package:movie_app/widgets/heading.dart';
 import 'package:movie_app/widgets/movie_card.dart';
 
@@ -17,90 +14,138 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List moviesLists = [];
+  List popMoviesLists = [];
+  List topMoviesLists = [];
   bool isLoading = true;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    getAllMovies();
-    getGenres();
+    getPopularMovies();
+    getTopMovies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: BottomBar(),
-      appBar: AppBar(
-        title: Image.asset(
-          "assets/logo.png",
-          width: 120,
-        ),
-        backgroundColor: Color(0xDD000000),
-        centerTitle: false,
-        toolbarHeight: 64,
-      ),
-      body: SingleChildScrollView(
-        physics: ScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-           HeadingTitle(title: "Latest"),
-           HeadingTitle(title: "Trending"),
-           
-           HeadingTitle(title: "Movies"),
-            Visibility(
-              visible: !isLoading,
-              replacement: Center(
-                child: CircularProgressIndicator(),
-              ),
-              child: ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: moviesLists.length,
-                itemBuilder: (context, index) {
-                  final item = moviesLists[index] as Map;
-                  return MovieCard(item: item);
-                },
-              ),
+    return DefaultTabController(
+      length: 3,
+      initialIndex: 0,
+      animationDuration: Duration(milliseconds: 200),
+      child: Scaffold(
+          bottomNavigationBar: TabBar(
+              indicatorSize: TabBarIndicatorSize.tab,
+              dividerColor: Colors.black,
+              labelColor: Colors.black,
+              padding: EdgeInsets.only(bottom: 50, left: 12, right: 12),
+              indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50), // Creates border
+                  color: PrimaryColor),
+              tabs: [
+                Tab(
+                  icon: Icon(Icons.home_rounded),
+                ),
+                Tab(
+                  icon: Icon(Icons.search_rounded),
+                ),
+                Tab(
+                  icon: Icon(Icons.person_2_rounded),
+                ),
+              ]),
+          appBar: AppBar(
+            title: Image.asset(
+              "assets/logo.png",
+              width: 120,
             ),
-            
-          ],
-        ),
-      ),
+            backgroundColor: Color(0xDD000000),
+            centerTitle: false,
+            toolbarHeight: 64,
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: 8),
+                child: Icon(Icons.person_2_rounded),
+              ),
+            ],
+          ),
+          body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              SingleChildScrollView(
+                physics: ScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    HeadingTitle(title: "Top Rated"),
+                    SizedBox(
+                      height: 200,
+                      child: Visibility(
+                        visible: !isLoading,
+                        replacement: Center(
+                          child: CircularProgressIndicator(color: PrimaryColor,),
+                        ),
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          itemCount: topMoviesLists.length,
+                          itemBuilder: (context, index) {
+                            final item = topMoviesLists[index] as Map;
+                            return SizedBox(
+                                width: 360, child: MovieCard(item: item));
+                          },
+                        ),
+                      ),
+                    ),
+                    HeadingTitle(title: "Popular Movies"),
+                    Visibility(
+                      visible: !isLoading,
+                      replacement: Center(
+                        child: CircularProgressIndicator(color: PrimaryColor,),
+                      ),
+                      child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: popMoviesLists.length,
+                        itemBuilder: (context, index) {
+                          final item = popMoviesLists[index] as Map;
+                          return MovieCard(item: item);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              DiscoveryPage(),
+              SingleChildScrollView(
+                physics: ScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    HeadingTitle(title: "My Acccount"),
+                  ],
+                ),
+              ),
+            ],
+          )),
     );
   }
 
-  Future<void> getGenres() async {
-    const url = "https://api.themoviedb.org/3/genre/movie/list";
-    final uri = Uri.parse(url);
-    final response = await http.get(uri, headers: {
-      HttpHeaders.authorizationHeader:
-          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5ODZmOThhZGRmNDI2ZTY2NDZhYmVjOTIyZWE0YzEyYSIsInN1YiI6IjY1ZGZmZWJhMmQ1MzFhMDE2MmJlZWQ0MCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Olu0l33GvUVewdfwns7vtojGDyF6ksXL_pP2hjvRAZ8',
-    });
+  Future<void> getPopularMovies() async {
+    final Map? response = await MovieService.getMovies(
+        "https://api.themoviedb.org/3/movie/popular");
 
-    print(response.body);
-    print(response.statusCode);
-  }
-
-  Future<void> getAllMovies() async {
-    const url =
-        "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc";
-    final uri = Uri.parse(url);
-    final response = await http.get(uri, headers: {
-      HttpHeaders.authorizationHeader:
-          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5ODZmOThhZGRmNDI2ZTY2NDZhYmVjOTIyZWE0YzEyYSIsInN1YiI6IjY1ZGZmZWJhMmQ1MzFhMDE2MmJlZWQ0MCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Olu0l33GvUVewdfwns7vtojGDyF6ksXL_pP2hjvRAZ8',
-    });
-    final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
-
-    if (response.statusCode == 200) {
+    if (response != null) {
       setState(() {
         isLoading = false;
       });
       setState(() {
-        moviesLists = responseJson['results'];
+        popMoviesLists = response['results'];
       });
     }
-    ;
+  }
+
+  Future<void> getTopMovies() async {
+    final Map? response = await MovieService.getMovies(
+        "https://api.themoviedb.org/3/movie/top_rated");
+      setState(() {
+        topMoviesLists = response?['results'];
+      });
   }
 }
