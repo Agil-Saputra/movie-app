@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/services/movie_service.dart';
 import 'package:movie_app/theme.dart';
-import 'package:movie_app/widgets/movie_card.dart';
 import 'package:movie_app/widgets/rating_indicator.dart';
 import 'package:readmore/readmore.dart';
 

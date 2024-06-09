@@ -51,6 +51,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ]),
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             title: Image.asset(
               "assets/logo.png",
               width: 120,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/pages/home_page.dart';
+import 'package:movie_app/pages/onboarding.dart';
+import 'package:movie_app/pages/splash_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,8 +15,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      title: 'Movizmo',
-      home: const HomePage(),
+      title: 'MovieList',
+      routes: {
+        '/': (context) => const SplashPage(),
+        '/onboarding': (context) => const Onboarding(),
+      },
     );
   }
 }
