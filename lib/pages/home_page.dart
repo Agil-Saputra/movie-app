@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
               indicatorSize: TabBarIndicatorSize.tab,
               dividerColor: Colors.black,
               labelColor: Colors.black,
-              padding: EdgeInsets.only(bottom: 50, left: 12, right: 12),
+              padding: EdgeInsets.only(bottom: 0, left: 8, right: 8),
               indicator: BoxDecoration(
                   borderRadius: BorderRadius.circular(50), // Creates border
                   color: PrimaryColor),
