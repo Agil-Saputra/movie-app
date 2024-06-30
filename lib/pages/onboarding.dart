@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/pages/home_page.dart';
+import 'package:movie_app/pages/login_page.dart';
 import 'package:movie_app/theme.dart';
 
 class Onboarding extends StatelessWidget {
@@ -50,7 +50,7 @@ class Onboarding extends StatelessWidget {
                       minimumSize: WidgetStatePropertyAll(Size.fromHeight(40))),
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomePage()));
+                        MaterialPageRoute(builder: (context) => LoginPage()));
                   },
                   child: Text(
                     "Let's Get Started",

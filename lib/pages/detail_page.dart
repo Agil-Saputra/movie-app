@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/services/movie_service.dart';
 import 'package:movie_app/theme.dart';
 import 'package:movie_app/widgets/rating_indicator.dart';
+import 'package:movie_app/widgets/reviews.dart';
+import 'package:movie_app/widgets/youtube_player.dart';
 import 'package:readmore/readmore.dart';
 
 class DetailPage extends StatefulWidget {
@@ -19,8 +21,10 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   Map detailMovies = {};
+  Map video = {};
   List credits = [];
   List recommendations = [];
+  List reviews = [];
   bool isLoading = true;
 
   @override
@@ -29,6 +33,8 @@ class _DetailPageState extends State<DetailPage> {
     getDetailedMovies();
     getCredits();
     getRecommendations();
+    getReviews();
+    getVideoTrailer();
   }
 
   @override
@@ -76,7 +82,7 @@ class _DetailPageState extends State<DetailPage> {
                           TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
                     ),
                     SizedBox(
-                      height: 12,
+                      height: 16,
                     ),
                     SizedBox(
                       width: 500,
@@ -102,7 +108,7 @@ class _DetailPageState extends State<DetailPage> {
                       ),
                     ),
                     SizedBox(
-                      height: 8,
+                      height: 16,
                     ),
                     Row(
                       children: [
@@ -129,7 +135,13 @@ class _DetailPageState extends State<DetailPage> {
                                     WidgetStatePropertyAll<Color>(Colors.white),
                                 iconColor: WidgetStatePropertyAll<Color>(
                                     Colors.black)),
-                            onPressed: () {},
+                            onPressed: () {
+                               showDialog(
+                                context: context, 
+                                builder: ((context) {
+                                  return Trailer(id : video["key"]);
+                                }));
+                            },
                             child: Row(
                               children: [
                                 Text(
@@ -161,13 +173,13 @@ class _DetailPageState extends State<DetailPage> {
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                     ),
-                    SizedBox(height: 12),
+                    SizedBox(height: 24),
                     Text(
                       "Cast",
                       style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: 24),
                     SizedBox(
                       width: 500,
                       height: 155,
@@ -213,13 +225,13 @@ class _DetailPageState extends State<DetailPage> {
                             );
                           }),
                     ),
-                    SizedBox(height: 12),
+                    SizedBox(height: 24),
                     Text(
                       "Recommendation",
                       style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 12),
+                    SizedBox(height: 24),
                     Visibility(
                       visible: !isLoading,
                       replacement: Center(
@@ -231,7 +243,9 @@ class _DetailPageState extends State<DetailPage> {
                         width: 500,
                         height: 300,
                         child: ListView.separated(
-                          separatorBuilder: (context, index) => SizedBox(width: 12,),
+                            separatorBuilder: (context, index) => SizedBox(
+                                  width: 12,
+                                ),
                             scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
                             itemCount: recommendations.length,
@@ -242,7 +256,13 @@ class _DetailPageState extends State<DetailPage> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                         Navigator.push(context, MaterialPageRoute(builder : (context) => DetailPage(id: film['id'],)));
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    DetailPage(
+                                                      id: film['id'],
+                                                    )));
                                       },
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
@@ -261,7 +281,27 @@ class _DetailPageState extends State<DetailPage> {
                             }),
                       ),
                     ),
-                    
+                    SizedBox(height: 24),
+                    Text(
+                      "Reviews",
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      width: 500,
+                      child:  ListView.separated(
+                         separatorBuilder: (context, index) => SizedBox(
+                                  height: 20,
+                                ),
+                          shrinkWrap: true,
+                          padding: EdgeInsets.only(top: 20),
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: reviews.length,
+                          itemBuilder: (context, index) {
+                            final review = reviews[index] as Map;
+                            return Review(review: review);
+                          }),
+                    ),
                   ],
                 ),
               ),
@@ -303,6 +343,24 @@ class _DetailPageState extends State<DetailPage> {
         recommendations = response['results'];
       });
     }
+  }
+
+  Future<void> getReviews() async {
+    final response = await MovieService.getMovies(
+        "https://api.themoviedb.org/3/movie/${widget.id}/reviews");
+    if (response != null) {
+      setState(() {
+        reviews = response['results'];
+      });
+    }
+  }
+
+   Future<void> getVideoTrailer() async {
+    final response = await MovieService.getMovies(
+        "https://api.themoviedb.org/3/movie/${widget.id}/videos");
+      setState(() {
+        video = response?['results'][0];
+      });
   }
 
   String formatDuration(int totalMinutes) {

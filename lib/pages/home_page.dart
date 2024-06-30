@@ -1,13 +1,17 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:movie_app/pages/discovery_page.dart';
+import 'package:movie_app/pages/myProfile_page.dart';
 import 'package:movie_app/services/movie_service.dart';
 import 'package:movie_app/theme.dart';
 import 'package:movie_app/widgets/heading.dart';
 import 'package:movie_app/widgets/movie_card.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final Map userData;
+  const HomePage({super.key,
+  required this.userData
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -59,12 +63,6 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: Color(0xDD000000),
             centerTitle: false,
             toolbarHeight: 64,
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(right: 8),
-                child: Icon(Icons.person_2_rounded),
-              ),
-            ],
           ),
           body: TabBarView(
             physics: NeverScrollableScrollPhysics(),
@@ -114,15 +112,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               DiscoveryPage(),
-              SingleChildScrollView(
-                physics: ScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    HeadingTitle(title: "My Acccount"),
-                  ],
-                ),
-              ),
+              MyProfile(userData: widget.userData,),
             ],
           )),
     );
