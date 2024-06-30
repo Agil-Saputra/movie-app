@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "673883505890",
+    "project_id": "savvy-temple-403002",
+    "storage_bucket": "savvy-temple-403002.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673883505890:android:f14ef6d735c970c8240abb",
+        "android_client_info": {
+          "package_name": "com.example.movie_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5oGf30d6xzvrTLmsEFvyQ9hWknPs3qG8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
