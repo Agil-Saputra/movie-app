@@ -2,6 +2,8 @@
 
 MovieList is a user-friendly application designed to provide you with comprehensive movie reviews. Whether you're a casual viewer or a film enthusiast, MovieList offers detailed insights into the latest releases, classics, and hidden gems. With features like user ratings, critic reviews, and personalized recommendations, MovieList ensures you always find the perfect movie for your next watch. Discover, explore, and enjoy movies with MovieList, your ultimate movie review companion.
 
+## Download This App
+<a href="https://www.upload-apk.com/ayBCyf1QhQpP2X5">Download App here</a>
 ## Our App Preview
 
 ## Splash Page
